@@ -8,10 +8,11 @@
       "@babel/preset-env",
       "@babel/preset-react"
     ],
-    "plugins": ["@babel/plugin-proposal-class-properties"]
+    "plugins":[
+      ["@babel/plugin-proposal-class-properties"]
+    ]
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "create": "webpack",
     "start": "webpack-dev-server"
   },
@@ -23,7 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "babel-loader": "^8.1.0",

@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import NoteList from "./NoteList";
+import "./App.css";
 
 class App extends Component{
   constructor(props){
@@ -44,6 +46,10 @@ class App extends Component{
           <button onClick={this.trigger}>trigger!</button>
           <input name="time-input" type="text"
      onChange={this.updateInput} value={this.state.inputNumber} />
+        </div>
+        <div id="content-div">
+          <NoteList />
+
         </div>
 
       </div>

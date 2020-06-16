@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import NoteList from "./NoteList";
+import "./App.css";
 
 class App extends Component{
   render(){
@@ -28,6 +30,10 @@ class App extends Component{
               </li>
             </ul>
           </div>
+        </div>
+        <div id="content-div">
+          <NoteList />
+
         </div>
 
       </div>

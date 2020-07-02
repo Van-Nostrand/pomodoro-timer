@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import NoteList from "./NoteList";
+import Timer from "./Timer";
 import "./App.css";
 
 class App extends Component{
@@ -13,39 +14,14 @@ class App extends Component{
       inputNumber: 0
     }
   }
-
-  trigger = () => {
-    let length = 1000; // one second by default
-
-    let timer = setTimeout(function(){
-      console.log("times up");
-    }, this.state.inputNumber);
-
-    setInterval(() => {
-      this.setState({
-        clock: Date.now()
-      });
-    }, length);
-  }
-
-
-  updateInput = (e) => {
-    if(isNaN(Number(e.target.value))) return;
-    else {
-      console.log(e.target.value);
-      this.setState({inputNumber: e.target.value});
-    }
-  }
+  
   render(){
     let time = this.state.clock;
     return(
       <div id="main-div">
         <div>
           <h2>pomodoro timer app</h2>
-          <div id="clock">{time}</div>
-          <button onClick={this.trigger}>trigger!</button>
-          <input name="time-input" type="text"
-     onChange={this.updateInput} value={this.state.inputNumber} />
+          <Timer />
         </div>
         <div id="content-div">
           <NoteList />

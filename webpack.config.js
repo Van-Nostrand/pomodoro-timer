@@ -18,6 +18,11 @@ module.exports = {
         test: /\.css$/, 
         use: ['style-loader', 'css-loader'], 
         exclude: /node_modules/
+      },
+      {
+        test: /\.wav$/,
+        use: "file-loader",
+        exclude: /node_modules/
       }
     ]
   },

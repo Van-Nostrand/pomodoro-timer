@@ -2,6 +2,9 @@ import React, {Component} from "react";
 import NoteList from "./NoteList";
 import Timer from "./Timer";
 import "./App.css";
+// import Hooktest from "./Hooktest";
+import TestOne from "./TestOne";
+import TestThree from "./TestThree";
 
 class App extends Component{
   constructor(props){
@@ -19,15 +22,14 @@ class App extends Component{
     let time = this.state.clock;
     return(
       <div id="main-div">
-        <div>
-          <h2>pomodoro timer app</h2>
-          <Timer />
-        </div>
-        <div id="content-div">
+          
+        {/* <Timer /> */}
+        {/* <div id="content-div">
           <NoteList />
+        </div> */}
 
-        </div>
-
+        {/* <TestOne /> */}
+        <TestThree />
       </div>
     )
   }

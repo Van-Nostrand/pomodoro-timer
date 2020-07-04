@@ -9,8 +9,16 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.(js)$/, use:'babel-loader', exclude: /node_modules/},
-      {test: /\.css$/, use: ['style-loader', 'css-loader'], exclude: /node_modules/}
+      {
+        test: /\.(js|jsx)$/, 
+        use:'babel-loader', 
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/, 
+        use: ['style-loader', 'css-loader'], 
+        exclude: /node_modules/
+      }
     ]
   },
   mode: 'development',

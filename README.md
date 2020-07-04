@@ -1,4 +1,4 @@
-#Pomodoro Timer App
+# Pomodoro Timer App
 I struggle with ADHD and know the value of a good Pomodoro timer system, so I thought I'd try making one before I invariably get sucked back into cleaning for the thousandth time. This app will start off browser based but eventually I'd like to port it to electron.
 
 ### TODO

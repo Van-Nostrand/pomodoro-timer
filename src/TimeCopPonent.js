@@ -1,268 +1,237 @@
-import React, {Component} from "react";
+import React, {useState, useEffect} from "react";
 import "./TimeCopPonent.css";
 import mouthpop from "./mouthpop.wav";
+import {CountDown} from "./CountDown";
 
-class TimeCopPonent extends Component{
-  constructor(props){
-    super(props);
+export default function TimeCopPonent(){
 
-    this.state = {
-      countDownTime: 0,
-      countDownOn: false,
-      hoursField: "",
-      minutesField: "",
-      secondsField: "",
-      errorMessage: "",
-      timeObject: {
-        hours: 0,
-        minutes: 0,
-        seconds: 0
-      }
-    }
-  }
+  // const [countDownTime, setCountDownTime] = useState(0);
+  const [countDownOn, setCountDownOn] = useState(false);
+  const [hoursField, setHoursField] = useState("");
+  const [minutesField, setMinutesField] = useState("");
+  const [secondsField, setSecondsField] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [timeObject, setTimeObject] = useState({hours: 0, minutes: 0, seconds: 0});
 
-  startCountdown = (e) => {
-    let time = parseInt(this.state.minutesField);
+  const startCountdown = (e) => {
 
-    let hours = this.state.hoursField !== "" ? parseInt(this.state.hoursField) : 0;
-    let minutes = this.state.minutesField !== "" ? parseInt(this.state.minutesField) : 0;
-    let seconds = this.state.secondsField !== "" ? parseInt(this.state.secondsField) : 0;
+    let time = parseInt(minutesField);
+    let hours = hoursField !== "" ? parseInt(hoursField) : 0;
+    let minutes = minutesField !== "" ? parseInt(minutesField) : 0;
+    let seconds = secondsField !== "" ? parseInt(secondsField) : 0;
 
     let timeObject = {
       hours,
       minutes,
       seconds 
     }
-
-    this.setState({
-      countDownTime: time,
-      countDownOn: true,
-      hoursField: "",
-      minutesField: "",
-      secondsField: "",
-      errorMessage: "",
-      timeObject
-    });
-  }
-
-  updateMinutes = (e) => {
     
+    // setCountDownTime(time);
+    setCountDownOn(true);
+    setHoursField("");
+    setMinutesField("");
+    setSecondsField("");
+    setErrorMessage("");
+    setTimeObject(timeObject);
+  }
+
+  const updateMinutes = (e) => {
     if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      this.setState({
-        minutesField: e.target.value,
-        errorMessage: ""
-      })
+      setMinutesField(e.target.value);
+      setErrorMessage("");
     } 
     else {
-      console.log("no");
-      this.setState({
-        errorMessage: "only enter numbers"
-      })
+      console.log("error in updateMinutes");
+      setErrorMessage("only enter numbers");
     }
   }
 
-  updateSeconds = (e) => {
+  const updateSeconds = (e) => {
     if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      this.setState({
-        secondsField: e.target.value, 
-        errorMessage: ""
-      });
+      setSecondsField(e.target.value);
+      setErrorMessage("");
     } 
     else {
-      this.setState({
-        errorMessage: "only enter numbers", 
-        secondsField: 0
-      });
+      console.log("error in updateSeconds");
+      setSecondsField(0);
+      setErrorMessage("only enter numbers")
     }
   }
 
-  updateHours = (e) => {
+  const updateHours = (e) => {
     if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      this.setState({
-        hoursField: e.target.value, 
-        errorMessage: ""
-      });
+      setHoursField(e.target.value);
+      setErrorMessage("");
     }
     else {
-      this.setState({
-        errorMessage: "only enter numbers"
-      })
+      console.log("error in updateHours");
+      setErrorMessage("only enter numbers");
     }
   }
 
-  stopCountdown = () => {
+
+  const stopCountdown = () => {
     console.log("stopcountdown");
-    // this.playSound();
-    this.setState({
-      countDownOn: false
-    });
+    setCountDownOn(false);
   }
 
-  playSound = () => {
+
+  const playSound = () => {
     document.querySelector("audio").play();
   }
 
-  render(){
-    let blankCountdown = <span>
+
+  let blankCountdown = (
+    <span>
       Hours: 0<br />
       Minutes: 0<br />
       Seconds: 0<br /> 
       Milliseconds: 0<br />
     </span>
-    return(
+  );
+  console.log(countDownOn);
+
+  return(
+    <div>
       <div>
-        <div>
-          Time Left<br /> { this.state.countDownOn ? 
+        Time Left
+        <br /> 
+        { 
+          countDownOn ? 
             <CountDown 
-              time={this.state.countDownTime} 
-              timeObject={this.state.timeObject}
-              playSound={this.playSound}
-              done={this.stopCountdown} /> 
+              // time={countDownTime} 
+              timeObject={timeObject}
+              playSound={playSound}
+              done={stopCountdown} /> 
             : blankCountdown
-          }
-        </div>
-        <div className="time-input-div">
-          <label htmlFor="hours-input">Hours</label>
-          <input 
-            type="text" 
-            label="hours-input"
-            value={this.state.hoursField} 
-            onChange={this.updateHours} />
-        </div>
-        <div className="time-input-div">
-          <label htmlFor="minutes-input">Minutes</label>
-          <input 
-            type="text" 
-            label="minutes-input"
-            value={this.state.minutesField} 
-            onChange={this.updateMinutes} />
-        </div>
-        <div className="time-input-div">
-          <label htmlFor="seconds-input">Seconds</label>
-          <input 
-            type="text"
-            name="seconds-input"
-            value={this.state.secondsField}
-            onChange={this.updateSeconds} />
-        </div>
-        <button onClick={this.startCountdown}>da start button</button>
-        <button onClick={this.stopCountdown}>da stop button</button>
-        <button onClick={this.playSound}>play da sound</button>
-
-        <div>{this.state.errorMessage}</div>
-        <audio src={mouthpop}></audio>
+        }
       </div>
-    )
-  }
-}
+      <div className="time-input-div">
+        <label htmlFor="hours-input">Hours</label>
+        <input 
+          type="text" 
+          label="hours-input"
+          value={hoursField} 
+          onChange={updateHours} />
+      </div>
+      <div className="time-input-div">
+        <label htmlFor="minutes-input">Minutes</label>
+        <input 
+          type="text" 
+          label="minutes-input"
+          value={minutesField} 
+          onChange={updateMinutes} />
+      </div>
+      <div className="time-input-div">
+        <label htmlFor="seconds-input">Seconds</label>
+        <input 
+          type="text"
+          name="seconds-input"
+          value={secondsField}
+          onChange={updateSeconds} />
+      </div>
+      <button onClick={startCountdown}>da start button</button>
+      <button onClick={stopCountdown}>da stop button</button>
+      <button onClick={playSound}>play da sound</button>
 
-
-class CountDown extends Component{
-  constructor(props){
-    super(props);
-
-    this.state = {
-      countDownTime: 0,
-      countDownTimeStart: 0,
-      countDownMS: 0,
-      startingObject: this.props.timeObject,
-      newTimeObject: {
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0
-      },
-      timeObject: {
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0,
-        absolute: 0
-      }
-    }
-  }
-
-  calculateTimePassed = () => {
-    const timeNow = +new Date();
-    const difference = timeNow - this.state.countDownTimeStart;
-    const goalDiff = this.state.countDownTimeGoal - timeNow;
-
-    let timeObject = {};
-    let newTimeObject = {};
-
-    if(difference > 0) {
-
-      newTimeObject = {
-        hours: Math.floor((goalDiff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((goalDiff / 1000 / 60) % 60),
-        seconds: Math.floor((goalDiff / 1000) % 60),
-        milliseconds: goalDiff
-      }
-
-      timeObject = {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-        milliseconds: difference,
-        absolute: timeNow
-      };
-    }
-
-    return [timeObject, newTimeObject];
-  };
-
-  componentDidMount(){
-    const INTERVAL_TIME = 200;
-    const BUFFER = 1000;
-
-    let thetime = this.props.time;
-
-    let ms = 0;
-    ms = ms + (this.state.startingObject.hours * 60 * 60 * 1000);
-    ms = ms + (this.state.startingObject.minutes * 60 * 1000);
-    ms = ms + (this.state.startingObject.seconds * 1000);
-
-    let hereNow = +new Date();
-
-    this.setState({
-      countDownTime: thetime,
-      countDownTimeStart: hereNow,
-      countDownTimeGoal: ms + hereNow + BUFFER,
-      countDownMS: ms
-    });
-    this.timer = setInterval(() => {
-      
-      let timeArr = this.calculateTimePassed();
-      let timeObject = timeArr[0];
-      let newTimeObject = timeArr[1];
-      if(newTimeObject.milliseconds > 0){
-        this.setState({
-          timeObject,
-          newTimeObject
-        });
-      } 
-      else if (newTimeObject.milliseconds <= 0){
-        this.props.playSound();
-        this.props.done();
-      }
-    }, INTERVAL_TIME);
-  }
-
-  componentWillUnmount(){
-    clearInterval(this.timer);
-  }
-
-  render(){
+      <div>{errorMessage}</div>
+      <audio src={mouthpop}></audio>
+    </div>
+  )
   
-    return(
-      <span>
-        Hours: {this.state.newTimeObject.hours}<br />
-        Minutes: {this.state.newTimeObject.minutes}<br />
-        Seconds: {this.state.newTimeObject.seconds}<br /> 
-        Milliseconds: {this.state.newTimeObject.milliseconds}<br />
-      </span>
-    )
-  }
 }
 
-export default TimeCopPonent;
+// //                                    playsound and done are functions
+// const CountDown = ({time, timeObject, playSound, done}) => {
+
+//   let [countDownTime, setCountDownTime] = useState(0);
+//   let [countDownTimeStart, setCountDownTimeStart] = useState(0);
+//   let [countDownMS, setCountDownMS] = useState(0);
+//   let [countDownTimeGoal, setCountDownTimeGoal] = useState(0);
+//   let [startingObject, setStartingObject] = useState(timeObject);
+//   let [timeGoalObject, setTimeGoalObject] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+//   let [timeNowObject, setTimeNowObject] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0, absolute: 0});
+  
+
+//   const calculateTimePassed = () => {
+
+//     const timeNow = +new Date();
+//     const difference = timeNow - countDownTimeStart;
+//     const goalDiff = countDownTimeGoal - timeNow;
+
+//     let newTimeNowObject = {};
+//     let newTimeGoalObject = {};
+
+//     if(difference > 0) {
+
+//       newTimeGoalObject = {
+//         hours: Math.floor((goalDiff / (1000 * 60 * 60)) % 24),
+//         minutes: Math.floor((goalDiff / 1000 / 60) % 60),
+//         seconds: Math.floor((goalDiff / 1000) % 60),
+//         milliseconds: goalDiff
+//       }
+
+//       newTimeNowObject = {
+//         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+//         minutes: Math.floor((difference / 1000 / 60) % 60),
+//         seconds: Math.floor((difference / 1000) % 60),
+//         milliseconds: difference,
+//         absolute: timeNow
+//       };
+//     }
+
+//     return [newTimeNowObject, newTimeGoalObject];
+//   };
+
+//   useEffect(() => {
+//     const INTERVAL_TIME = 200;
+//     const BUFFER = 1000;
+
+//     let thetime = time;
+
+//     let ms = 0;
+//     ms = ms + (startingObject.hours * 60 * 60 * 1000);
+//     ms = ms + (startingObject.minutes * 60 * 1000);
+//     ms = ms + (startingObject.seconds * 1000);
+
+//     let hereNow = +new Date();
+
+//     setCountDownTime(thetime);
+//     setCountDownTimeStart(hereNow);
+//     setCountDownTimeGoal(ms + hereNow + BUFFER);
+//     setCountDownMS(ms);
+
+//     const TIMER = setInterval(() => {
+      
+//       // let timeNowGoalArr = calculateTimePassed();
+//       let [ newTimeNowObject, newTimeGoalObject ] = calculateTimePassed();
+//       // let newTimeNowObject = timeNowGoalArr[0];
+//       // let newTimeGoalObject = timeNowGoalArr[1];
+
+//       if(newTimeGoalObject.milliseconds > 0){
+        
+//         setTimeNowObject(newTimeNowObject);
+//         setTimeGoalObject(newTimeGoalObject);
+//       } 
+//       else if (newTimeGoalObject.milliseconds <= 0){
+//         playSound();
+//         done();
+//       }
+//     }, INTERVAL_TIME);
+
+//     return () => {
+
+//       clearInterval(TIMER);
+//     }
+    
+//   }, []);
+  
+//   return(
+//     <span>
+//       Hours: {timeNowObject.hours}<br />
+//       Minutes: {timeNowObject.minutes}<br />
+//       Seconds: {timeNowObject.seconds}<br /> 
+//       Milliseconds: {timeNowObject.milliseconds}<br />
+//     </span>
+//   )
+// }

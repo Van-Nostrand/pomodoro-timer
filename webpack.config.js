@@ -37,7 +37,9 @@ module.exports = {
       {
         test: /\.css$/, 
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
           "css-loader"
         ],
         exclude: /node_modules/
@@ -49,10 +51,15 @@ module.exports = {
       }
     ]
   },
-  mode: 'development',
+  // mode: 'development',
   plugins: [
     new HtmlWebpackPlugin ({
-      template: 'public/index.html'
+      template: path.resolve(__dirname, 'public/index.html'),
+      inject: "body"
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css"
     })
   ]
 }

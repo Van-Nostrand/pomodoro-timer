@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from "react";
 import "./TimeCopPonent.css";
 import mouthpop from "./mouthpop.wav";
-import {CountDown} from "./CountDown";
+import { CountDown } from "./CountDown";
 
 export default function TimeCopPonent(){
 
-  // const [countDownTime, setCountDownTime] = useState(0);
   const [countDownOn, setCountDownOn] = useState(false);
   const [hoursField, setHoursField] = useState("");
   const [minutesField, setMinutesField] = useState("");
@@ -98,8 +97,8 @@ export default function TimeCopPonent(){
         <br /> 
         { 
           countDownOn ? 
-            <CountDown 
-              // time={countDownTime} 
+            <CountDown
+              timeAtStart={Date.now()}
               timeObject={timeObject}
               playSound={playSound}
               done={stopCountdown} /> 

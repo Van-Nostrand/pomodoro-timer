@@ -1,95 +1,59 @@
 import React , { useEffect, useState } from "react";
+/**
+ * 
+ * @param {number} timeAtStart the time in milliseconds when CountDown is created
+ * @param {Object} timeObject an object with key/values describing the amount of time the user wants the countdown to use
+ * @param {function} playSound a function that plays a sound when the countdown hits zero
+ * @param {function} done a function that causes the parent component to unmount CountDown
+ */
+export const CountDown = ({ timeAtStart, timeObject, playSound, done}) => {
 
-//                                    playsound and done are functions
-export const CountDown = ({ timeObject, playSound, done}) => {
+  let ms = 
+    (timeObject.hours * 60 * 60 * 1000) + 
+    (timeObject.minutes * 60 * 1000) + 
+    (timeObject.seconds * 1000);
 
-  let [countDownTimeStart,  setCountDownTimeStart] = useState(0);
-  let [totalMSLeft,         setTotalMSLeft] = useState(0);
-  let [countDownTimeGoal,   setCountDownTimeGoal] = useState(0);
-  let [startingObject,      setStartingObject] = useState(timeObject);
-  let [countdownObject,     setCountdownObject] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
-  let [timeNowObject,       setTimeNowObject] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0, absolute: 0});
+  const TIMER_INTERVAL = 150;
+  
+  let [ timeAtLastUpdate,   setTimeAtLastUpdate ] = useState(timeAtStart);
+  let [ totalMSLeft,        setTotalMSLeft ]      = useState(ms);
+  let [ timeNowObject,      setTimeNowObject ]    = useState({hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+
 
   const calculateTimePassed = () => {
 
-    const timeNow = +new Date();
-    const difference = timeNow - countDownTimeStart;
-    const goalDiff = countDownTimeGoal - timeNow;
+    const timeNow = Date.now();
+    const difference = timeNow - timeAtLastUpdate;
+    const newMSLeft = totalMSLeft - difference;
 
-    let newTimeNowObject = {};
-    let newCountdownObject = {};
+    let newTimeNowObject = {
+      hours: Math.floor((newMSLeft / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor(newMSLeft / (1000 * 60)) % 60,
+      seconds: Math.floor(newMSLeft / 1000) % 60,
+      milliseconds: newMSLeft % 1000
+    };
 
-    if(difference > 0) {
-
-      newCountdownObject = {
-        hours: Math.floor((goalDiff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((goalDiff / 1000 / 60) % 60),
-        seconds: Math.floor((goalDiff / 1000) % 60),
-        milliseconds: goalDiff
-      }
-
-      newTimeNowObject = {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-        milliseconds: difference,
-        absolute: timeNow
-      };
-    }
-
-    setTimeNowObject(newTimeNowObject);
-    setCountdownObject(newCountdownObject);
-    setTotalMSLeft(totalMSLeft - difference);
-
-    console.log("total ms left in calculate function");
-    console.log(totalMSLeft);
-    // return [newTimeNowObject, newCountdownObject];
+    return [ newTimeNowObject, newMSLeft, timeNow ];
   };
 
   useEffect(() => {
-    const INTERVAL_TIME = 200;
-    const BUFFER = 1000;
-
-    // let thetime = time;
-
-    let ms = 0;
-    ms = ms + (startingObject.hours * 60 * 60 * 1000);
-    ms = ms + (startingObject.minutes * 60 * 1000);
-    ms = ms + (startingObject.seconds * 1000);
-
-    let hereNow = +new Date();
-
-    // setCountDownTime(thetime);
-    setCountDownTimeStart(hereNow);
-    setCountDownTimeGoal(ms + hereNow + BUFFER);
-    setTotalMSLeft(ms);
-
-    console.log("total ms left in effect prep");
-    console.log(totalMSLeft);
-
-    const TIMER = setInterval(() => {
+    
+    const TIMER = setInterval(() => { 
       
-      // let [ newTimeNowObject, newCountdownObject ] = calculateTimePassed();
-      // calculateTimePassed();
-      console.log("total ms left");
-      console.log(totalMSLeft);
+      let [ newTimeNowObject, newMSLeft, timeNow ] = calculateTimePassed();
 
-      if(totalMSLeft > 0){
-        // setTimeNowObject(timeNowObject);
-        // setCountdownObject(countdownObject);
-        calculateTimePassed();
-      } 
-      else if (totalMSLeft <= 0){
+      if(newMSLeft <= 0){
         playSound();
         done();
       }
-    }, INTERVAL_TIME);
-
-    return () => {
-
-      clearInterval(TIMER);
-    }
-    
+      else {
+        setTotalMSLeft(newMSLeft);
+        setTimeNowObject(newTimeNowObject);
+        setTimeAtLastUpdate(timeNow);
+      }
+      
+    }, TIMER_INTERVAL);
+    return () => clearInterval(TIMER);
   }, []);
   
   return(

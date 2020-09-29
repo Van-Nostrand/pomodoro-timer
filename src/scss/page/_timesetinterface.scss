@@ -1,22 +1,43 @@
 .timesetinterface{
   font-size: $timer-size;
+  box-sizing: content-box;
   
   &__colons{
     display: inline-block;
-    transform: translateY(-$timer-size / 8)
+    transform: translateY(-$timer-size / 8);
   }
 
   input[type=text]{
+    box-sizing: content-box;
     position: relative;
     font-size: $timer-size;
     border: none;
     width: $timer-size + 2rem;
-    height: $timer-size - 4.5rem;
-    padding-bottom: $timer-size / 12;
+    height: $timer-size - 3rem;
     margin: 1rem;
     text-align: center;
     color: #fff;
-    background: $timer-background-color;
+    background: rgba(0,0,0,0);
+
+    font-family: "Roboto", monospace;
+    letter-spacing: -0.7rem;
+
+  }
+
+  .fake-background{
+    box-sizing: content-box;
+    display: inline-block;
+    position: absolute;
+    background-color: green;
+    background-color: $timer-background-color;
+    height: $timer-size - 0.5rem;
+    width: $timer-size + 2.5rem;
+    transform: translate(0.95rem, 0.1rem);
+  }
+
+  .fake-caret-border-top, .fake-caret-border-bottom{
+    display: inline-block;
+    position: absolute;
   }
 }
 

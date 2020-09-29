@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./src/App";
-import TimeCopPonent from "./src/TimeCopPonent";
-import EffectTest from "./EffectTest";
+import TimeCopPonent from "./src/components/TimeCopPonent";
+import TimeSetInterface from "./src/components/TimeSetInterface";
 import "./index.css";
+import "./src/scss/main.scss";
 
-ReactDOM.render(<TimeCopPonent />, document.getElementById("root"));
+ReactDOM.render(<TimeSetInterface />, document.getElementById("root"));

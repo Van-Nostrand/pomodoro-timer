@@ -1,17 +1,16 @@
 import React , { useEffect, useState } from "react";
 /**
  * 
- * @param {number} timeAtStart the time in milliseconds when CountDown is created
+ * @param {number} timeAtStart the time in milliseconds when Countdown is created
  * @param {Object} timeObject an object with key/values describing the amount of time the user wants the countdown to use
  * @param {function} playSound a function that plays a sound when the countdown hits zero
- * @param {function} done a function that causes the parent component to unmount CountDown
+ * @param {function} done a function that causes the parent component to unmount Countdown
  */
-export const CountDown = ({ timeAtStart, timeObject, playSound, done}) => {
+export const Countdown = ({ timeAtStart, timeObject, playSound, done}) => {
 
-  let ms = 
-    (timeObject.hours * 60 * 60 * 1000) + 
-    (timeObject.minutes * 60 * 1000) + 
-    (timeObject.seconds * 1000);
+  let ms =  (timeObject.hours * 60 * 60 * 1000) + 
+            (timeObject.minutes * 60 * 1000) + 
+            (timeObject.seconds * 1000);
 
   const TIMER_INTERVAL = 150;
   

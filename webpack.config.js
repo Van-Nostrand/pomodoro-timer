@@ -27,7 +27,7 @@ module.exports = {
             options: {
               implementation: require('node-sass'),
               sassOptions: {
-                file: "src/sass/main.scss",
+                file: "src/scss/main.scss",
                 outFile: "public/style.css"
               }
             }

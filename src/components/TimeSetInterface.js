@@ -54,11 +54,17 @@ export default function TimeSetInterface(){
 
   return(
     <div className="timesetinterface">
+      {/* <div className="fake-cursor-border-top"></div> */}
       <input type="text" value={hoursSection} onBlur={() => handleBlur("hours", hoursSection)} onChange={(e) => updateTimeUnit("hours", e)} />
+      {/* <div className="fake-cursor-border-bottom"></div> */}
       <div className="timesetinterface__colons">:</div>
+      {/* <div className="fake-cursor-border-top"></div> */}
       <input type="text" value={minutesSection} onBlur={() => handleBlur("minutes", minutesSection)} onChange={(e) => updateTimeUnit("minutes", e)} />
+      {/* <div className="fake-cursor-border-bottom"></div> */}
       <div className="timesetinterface__colons">:</div>
+      {/* <div className="fake-cursor-border-top"></div> */}
       <input type="text" value={secondsSection} onBlur={() => handleBlur("seconds", secondsSection)} onChange={(e) => updateTimeUnit("seconds", e)} />
+      {/* <div className="fake-cursor-border-bottom"></div> */}
       <div>
         <button onClick={submitTime}>Submit</button>
       </div>

@@ -11,13 +11,12 @@
     font-size: $timer-size;
     border: none;
     width: $timer-size + 2rem;
-    box-shadow: 
-      inset 0 0 2px  rgba(0,0,0,0.1),
-            0 0 16px rgba(0,0,0,0.1); 
+    height: $timer-size - 4.5rem;
+    padding-bottom: $timer-size / 12;
+    margin: 1rem;
     text-align: center;
-
     color: #fff;
-    background: rgba(255,255,255,0.12);
+    background: $timer-background-color;
   }
 }
 

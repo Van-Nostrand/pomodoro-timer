@@ -5,10 +5,13 @@ export default function TimeSetInterface(){
   let [ hoursSection, setHoursSection ] = useState("00");
   let [ minutesSection, setMinutesSection ] = useState("00");
   let [ secondsSection, setSecondsSection ] = useState("00");
+  let [ totalMS, setTotalMS ] = useState(0);
+  let [ timerRunning, setTimerRunning ] = useState(false);
 
   const updateTimeUnit = (type, e) => {
     e.preventDefault();
 
+    //each option tests that input is either a number or blank, and keeps the length between 0-2 characters
     switch(type){
       case "hours": 
         if((/^\d+$/.test(e.target.value) || e.target.value === "") && e.target.value.length <= 2){
@@ -29,6 +32,7 @@ export default function TimeSetInterface(){
     }
   }
 
+  //maintains a clock-like look by keeping 0's on display 
   const handleBlur = (denomination, time) => {
     if(time.length == 0){
       switch(denomination){
@@ -48,29 +52,79 @@ export default function TimeSetInterface(){
     }
   }
 
+  const convertToMS = (denomination, value) => {
+    switch(denomination){
+      case "hours": setTotalMS(parseInt(value) * 60 * 60 * 1000); break;
+      case "minutes": setTotalMS(parseInt(value) * 60 * 1000); break;
+      case "seconds": setTotalMS(parseInt(value) * 1000); break;
+      default: console.log("error in convertToMS");
+    }
+  }
+
+  const determineMilliseconds = () => {
+    let total = 0;
+    total += parseInt(hoursSection) * 60 * 60 * 1000;
+    total += parseInt(minutesSection) * 60 * 1000;
+    total += parseInt(secondsSection) * 1000;
+
+    setTotalMS(total);
+  }
+
   const submitTime = () => {
     console.log("here ya go!")
   }
 
+  useEffect(() => {
+    determineMilliseconds();
+  });
+  
   return(
     <div className="timesetinterface">
-      <div className="fake-caret-border-top"></div>
+      {/* <div className="fake-caret-border-top"></div> */}
       <div className="fake-background"></div>
-      <input type="text" value={hoursSection} onBlur={() => handleBlur("hours", hoursSection)} onChange={(e) => updateTimeUnit("hours", e)} />
-      <div className="fake-caret-border-bottom"></div>
-      <div className="timesetinterface__colons">:</div>
-      <div className="fake-caret-border-top"></div>
+
+      <input 
+        type="text" 
+        value={hoursSection} 
+        onBlur={() => handleBlur("hours", hoursSection)} 
+        onChange={(e) => updateTimeUnit("hours", e)} />
+
+      {/* <div className="fake-caret-border-bottom"></div> */}
+
+      <div className="timesetinterface__colons">
+        :
+      </div>
+
       <div className="fake-background"></div>
-      <input type="text" value={minutesSection} onBlur={() => handleBlur("minutes", minutesSection)} onChange={(e) => updateTimeUnit("minutes", e)} />
-      <div className="fake-caret-border-bottom"></div>
-      <div className="timesetinterface__colons">:</div>
-      <div className="fake-caret-border-top"></div>
+
+      <input 
+        type="text" 
+        value={minutesSection} 
+        onBlur={() => handleBlur("minutes", minutesSection)} 
+        onChange={(e) => updateTimeUnit("minutes", e)} />
+
+      {/* <div className="fake-caret-border-bottom"></div> */}
+
+      <div className="timesetinterface__colons">
+        :
+      </div>
+
+      {/* <div className="fake-caret-border-top"></div> */}
       <div className="fake-background"></div>
-      <input type="text" value={secondsSection} onBlur={() => handleBlur("seconds", secondsSection)} onChange={(e) => updateTimeUnit("seconds", e)} />
-      <div className="fake-caret-border-bottom"></div>
+
+      <input 
+        type="text" 
+        value={secondsSection} 
+        onBlur={() => handleBlur("seconds", secondsSection)} 
+        onChange={(e) => updateTimeUnit("seconds", e)} />
+
+      {/* <div className="fake-caret-border-bottom"></div> */}
+
       <div>
         <button onClick={submitTime}>Submit</button>
       </div>
+
+      <div>total ms is: {totalMS || 0}</div>
     </div>
   )
 }

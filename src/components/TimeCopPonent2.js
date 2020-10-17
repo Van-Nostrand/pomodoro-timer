@@ -79,7 +79,9 @@ export default function TimeCopPonent2(){
         updateTimeUnit={updateTimeUnit}  
         hours={hours} 
         minutes={minutes} 
-        seconds={seconds} />
+        seconds={seconds}
+        totalMS={totalMS}
+        countdownRunning={countdownRunning} />
 
       <button onClick={startCountdown}>
         da start button

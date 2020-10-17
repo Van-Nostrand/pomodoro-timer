@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 
-export const TimeSetInterface2 = ({updateTimeUnit, timerOn, hours, minutes, seconds}) => {  
+export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) => {  
 
   //maintains a clock-like look by keeping 0's on display 
   const handleBlur = (denomination, time) => {

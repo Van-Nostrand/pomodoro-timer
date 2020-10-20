@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
+import {SecretInputBox} from "./SecretInputBox";
 
 
-export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) => {  
+export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) => { 
+  
+  const [ secretInputValue, setSecretInputValue ] = useState("");
+
+  const getValue = (value) => {
+    setSecretInputValue(value);
+  }
 
   //maintains a clock-like look by keeping 0's on display 
   const handleBlur = (denomination, time) => {
-    // console.log(denomination)
-    // console.log(time)
+    
     if(time.length == 0){
       switch(denomination){
         case "hours": updateTimeUnit("hours", "00"); break;
@@ -28,6 +34,8 @@ export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seco
   return(
     <div className="timesetinterface">
       <div className="fake-background"></div>
+
+      <SecretInputBox maxInputLength="2" passValue={getValue} />
 
       <input 
         type="text" 

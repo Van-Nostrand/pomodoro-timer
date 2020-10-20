@@ -7,4 +7,4 @@ import { SecretInputBox} from "./src/components/SecretInputBox";
 import "./index.css";
 import "./src/scss/main.scss";
 
-ReactDOM.render(<SecretInputBox />, document.getElementById("root"));
+ReactDOM.render(<TimeCopPonent2 />, document.getElementById("root"));

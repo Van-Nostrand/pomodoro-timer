@@ -35,7 +35,11 @@ export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seco
     <div className="timesetinterface">
       <div className="fake-background"></div>
 
-      <SecretInputBox maxInputLength="2" passValue={getValue} />
+      <SecretInputBox 
+        maxInputLength="2" 
+        passValue={(value) => updateTimeUnit("hours", value)}
+        inputValue={hours}
+        handleBlur={() => handleBlur("hours", hours)} />
 
       <input 
         type="text" 

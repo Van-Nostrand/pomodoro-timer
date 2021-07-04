@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {SecretInputBox} from "./SecretInputBox";
+import SecretInputBox from "./SecretInputBox";
 
 
-export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) => { 
+export default function TimeSetInterface2({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) { 
   
   const [ secretInputValue, setSecretInputValue ] = useState("");
 
@@ -39,7 +39,8 @@ export const TimeSetInterface2 = ({updateTimeUnit, totalMS, hours, minutes, seco
         maxInputLength="2" 
         passValue={(value) => updateTimeUnit("hours", value)}
         inputValue={hours}
-        handleBlur={() => handleBlur("hours", hours)} />
+        handleBlur={() => handleBlur("hours", hours)} 
+      />
 
       <input 
         type="text" 

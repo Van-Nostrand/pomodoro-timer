@@ -1,8 +1,5 @@
-@import "abstracts/variables";
-@import "abstracts/mixins";
+@use "base/base";
 
-@import "base/base";
-
-@import "component/timeSetInterface";
-@import "component/timeCopPonent";
-@import "component/secretInputBox";
+@use "component/timeSetInterface";
+@use "component/timeCopPonent";
+@use "component/secretInputBox";

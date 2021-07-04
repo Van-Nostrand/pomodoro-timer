@@ -1,25 +1,27 @@
+@use 'sass:math';
+@use '../abstracts/vars';
+
 .timesetinterface{
-  font-size: $timer-size;
+  font-size: vars.$timer-size;
   box-sizing: content-box;
   
   &__colons{
     display: inline-block;
-    transform: translateY(-$timer-size / 8);
+    transform: translateY(math.div(-(vars.$timer-size), 8));
   }
 
   input[type=text]{
     box-sizing: content-box;
     position: relative;
-    font-size: $timer-size;
+    font-size: vars.$timer-size;
     border: none;
-    width: $timer-size + 2rem;
-    height: $timer-size - 3rem;
+    width: vars.$timer-size + 2rem;
+    height: vars.$timer-size - 3rem;
     margin: 1rem;
     text-align: center;
     color: #fff;
     background: rgba(0,0,0,0);
 
-    // font-family: "Roboto", monospace;
     letter-spacing: -0.7rem;
 
   }
@@ -29,9 +31,9 @@
     display: inline-block;
     position: absolute;
     background-color: green;
-    background-color: $timer-background-color;
-    height: $timer-size - 0.5rem;
-    width: $timer-size + 2.5rem;
+    background-color: vars.$timer-background-color;
+    height: vars.$timer-size - 0.5rem;
+    width: vars.$timer-size + 2.5rem;
     transform: translate(0.95rem, 0.1rem);
   }
 

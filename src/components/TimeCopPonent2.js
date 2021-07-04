@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import mouthpop from "../assets/mouthpop.wav";
 import { Countdown } from "./Countdown";
-import { TimeSetInterface2 } from "./TimeSetInterface2";
+import TimeSetInterface2 from "./TimeSetInterface2";
+import moment from 'moment';
 
 export default function TimeCopPonent2(){
 

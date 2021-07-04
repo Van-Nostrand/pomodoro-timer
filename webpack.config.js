@@ -21,15 +21,10 @@ module.exports = {
         use: [
           'style-loader',
           'css-loader',
-          'resolve-url-loader',
           {
             loader: 'sass-loader',
             options: {
-              implementation: require('node-sass'),
-              sassOptions: {
-                file: "src/scss/main.scss",
-                outFile: "public/style.css"
-              }
+              implementation: require('sass'),
             }
           }
         ]

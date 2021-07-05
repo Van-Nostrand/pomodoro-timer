@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 // This allows for deeper customization of a text input box, including the caret
-// for simplicity, I've disabled pasting into the input
+// for now, I've disabled pasting into the input
 // highlighting with the mouse is not possible right now
 // spaces are not properly represented
 // input type = text is necessary because type = number gives those stupid arrow buttons
@@ -15,26 +15,32 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
   const [ caretBright, setCaretBright ] = useState(true); //controls the carets blink
   const [ caretPosition, setCaretPosition ] = useState(0); //position of the "fake" caret
   const [ inputFocus, setInputFocus ] = useState(false); //when input has focus, this shows the caret
-  const [ inputString, setInputString ] = useState('');
-  const [ inputNumber, setInputNumber ] = useState(0);
-  const [ inputVal , setInputVal ] = useState(inputType === 'string' ? '' : 0); 
+  const [ inputVal , setInputVal ] = useState('0'); 
+
+  useEffect(() => {
+    let BLINKING_CARET;
+    
+    if(inputFocus){
+      BLINKING_CARET = setInterval(() => {
+        setCaretBright(oldstate => !oldstate);
+      }, 500);
+    }else if(!inputFocus){
+      clearInterval(BLINKING_CARET);
+    }
+
+    return () => clearInterval(BLINKING_CARET);
+  }, [inputFocus]);
   
-
-
-  // const handleTyping = (e) => {
-  //   setCaretPosition(e.target.selectionStart);
-  //   passValue(inputValue);
-  // }
 
   // actions from the user that need handling:
   // - the user clicks the input (done)
-  // - the user types
-  // - the user uses the arrow keys
+  // - the user types (done)
+  // - the user uses the arrow keys (done)
   // - the user clicks and drags with their mouse
 
   // the user clicks the input
   const handleClick = (e) => {
-    console.log('inputclick and selectionstart is ', e.target.selectionStart);
+    // console.log('inputclick and selectionstart is ', e.target.selectionStart);
     
     setCaretPosition(e.target.selectionStart);
   }
@@ -42,7 +48,7 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
 
   // 
   const handleInputKeyDown = (e) => {
-    console.log("key down and selectionStart is ", e.target.selectionStart);
+    // console.log("key down and selectionStart is ", e.target.selectionStart);
     if(e.keyCode === 39) {
       setCaretPosition(oldPosition => oldPosition + 1);
     } 
@@ -56,20 +62,8 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
 
 
   const createInputString = () => {
-    let arr = [];
-    if (inputType === 'string') {
-      arr = inputString.split("").map((char, i) => 
-        <span 
-          className="string-char" 
-          key={`string-char-${i}`}
-        >
-          {char}
-        </span>
-    );
-
-    }
-    else if (inputType === 'number') {
-      arr = inputNumber.toString().split("").map((char, i) => 
+    const arr = 
+      inputVal.split("").map((char, i) => 
         <span 
           className="string-char" 
           key={`string-char-${i}`}
@@ -77,26 +71,21 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
           {char}
         </span>
       );
-    }
     return arr;
     
   }
 
 
   const updateValue = (e) => {
-    console.log('updatevalue and e.target.selectionStart is ', e.target.selectionStart);
+    // console.log('updatevalue and e.target.selectionStart is ', e.target.selectionStart);
     
-    inputType === 'string' ? 
-      setInputString(e.target.value)
-      :
-      setInputNumber(e.target.value);
-
+    setInputVal(e.target.value);
     setCaretPosition(e.target.selectionStart);
   }
 
 
   const gainFocus = (e) => {
-    console.log('gain focus and e.target.selectionStart is ', e.target.selectionStart);
+    // console.log('gain focus and e.target.selectionStart is ', e.target.selectionStart);
     setCaretPosition(e.target.selectionStart);
     setInputFocus(true);
   }
@@ -125,20 +114,9 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
     ></span>;
 
 
-  useEffect(() => {
-    let BLINKING_CARET;
-    
-    if(inputFocus){
-      BLINKING_CARET = setInterval(() => {
-        setCaretBright(oldstate => !oldstate);
-      }, 500);
-    }else if(!inputFocus){
-      clearInterval(BLINKING_CARET);
-    }
+  
 
-    return () => clearInterval(BLINKING_CARET);
-  }, [inputFocus]);
-
+  // console.log("inputVal is ", inputVal);
 
 
   // input string is split into an array so that the caret, which is a span, can be inserted between characters
@@ -146,7 +124,6 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
 
   inputStringArr.splice(caretPosition, 0, fakeCaret);
 
-  // console.log(inputStringArr);
   let inputDiv = (
     <div className="fake-input">
       { inputStringArr }
@@ -161,7 +138,7 @@ export default function SecretInputBox({ maxInputLength, passValue, inputValue, 
       <input 
         className="real-input" 
         type="text" 
-        value={inputType === 'string' ? inputString : inputNumber} 
+        value={inputVal} 
         maxLength={maxInputLength}
         onChange={updateValue}
         onClick={handleClick}

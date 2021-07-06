@@ -17,13 +17,8 @@ export default function TimeCopPonent2() {
   const [ inputDisplayMode, setInputDisplayMode ] = useState(false);
   const [ remainingTimeObject, setRemainingTimeObject ] = useState();
 
-  console.log('hours is ', hours);
-  console.log('minutes is ', minutes);
-  console.log('seconds is ', seconds);
-  
-  
-  
-  
+  console.log("minutes is ", minutes)
+
 
   const startCountdown = (e) => {
     determineMilliseconds();
@@ -31,6 +26,7 @@ export default function TimeCopPonent2() {
     setStartTime(Date.now());
     setTimeObject({hours, minutes, seconds})
     setRemainingTimeObject({hours, minutes, seconds});
+    setInputDisplayMode(true);
     // setHours("");
     // setMinutes("");
     // setSeconds("");
@@ -40,6 +36,7 @@ export default function TimeCopPonent2() {
   const stopCountdown = () => {
     console.log("stopcountdown");
     setCountdownRunning(false);
+    setInputDisplayMode(false);
   }
 
   const playSound = () => {
@@ -65,23 +62,21 @@ export default function TimeCopPonent2() {
   }
 
   const updateTimeUnit = (denomination, amount) => {
+    // console.log('denomination is ', denomination);
+    // console.log('amount is ', amount);
+    
+    
 
     //each option tests that input is either a number or blank, and keeps the length between 0-2 characters
     switch(denomination){
       case "hours": 
-        if((/^\d+$/.test(amount) || amount === "") && amount.length <= 2){
           setHours(amount);
-        }
         break;
       case "minutes": 
-        if((/^\d+$/.test(amount) || amount === "") && amount.length <= 2){
           setMinutes(amount);
-        }
         break;
       case "seconds": 
-        if((/^\d+$/.test(amount) || amount === "") && amount.length <= 2){
           setSeconds(amount);
-        }
         break;
       default: console.log("error in updateTimeUnit switch statement");
     }
@@ -98,7 +93,6 @@ export default function TimeCopPonent2() {
   }
 
 
-  console.log("timecopponent is rendering ")
 
   return(
     <div className="pomodoro-app">
@@ -122,10 +116,6 @@ export default function TimeCopPonent2() {
       </button>
       <button onClick={playSound}>
         play da sound
-      </button>
-
-      <button onClick={triggerDisplayMode}>
-        displayMode?
       </button>
 
       {/* { showCountdown && (

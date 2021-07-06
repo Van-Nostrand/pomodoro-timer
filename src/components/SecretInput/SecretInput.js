@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import {
-  wrapperStyle,
-  realInputStyle,
-  fakeInputStyle,
-  stringCharStyle,
-  fakeCaretStyle,
-  noCaretStyle
-} from './SecretInputStyles';
+
 import './style.css';
 
 
@@ -20,7 +12,7 @@ import './style.css';
 // number input testing is implemented but string input testing is not
 export default function SecretInput({ maxInputLength, passValue, inputValue, handleBlur, inputType, elementWidth , elementHeight, displayMode }) {
 
-  // console.log('inputValue is ', inputValue);
+  console.log('inputValue is ', inputValue);
   
 
   const WIDTH = elementWidth;
@@ -72,9 +64,11 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
   // converts the user input into a series of spans
   const createInputString = () => {
     const arr = displayMode ? 
-      inputValue 
+      <span className="string-char" style={{lineHeight: `${HEIGHT}rem`}}>
+        { inputValue } 
+      </span>
       :
-      inputVal.split("").map((char, i) => 
+      inputValue.split("").map((char, i) => 
         <span 
           className="string-char" 
           key={`string-char-${i}`}
@@ -187,7 +181,7 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
             fontSize: `${FONT_SIZE}rem`,
           }}
           type="text" 
-          value={inputVal} 
+          value={inputValue} 
           maxLength={maxInputLength}
           onChange={updateValue}
           onClick={handleClick}

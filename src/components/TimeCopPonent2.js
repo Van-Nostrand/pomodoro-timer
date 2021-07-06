@@ -1,31 +1,45 @@
 import React, {useState, useEffect} from "react";
 import mouthpop from "../assets/mouthpop.wav";
-import { Countdown } from "./Countdown";
+import Countdown from "./Countdown";
 import TimeSetInterface2 from "./TimeSetInterface2";
 import moment from 'moment';
 
-export default function TimeCopPonent2(){
+export default function TimeCopPonent2() {
 
   const [ countdownRunning, setCountdownRunning ] = useState(false);
+  const [ startTime, setStartTime ] = useState(Date.now());
   const [ hours, setHours ] = useState("00");
   const [ minutes, setMinutes ] = useState("00");
   const [ seconds, setSeconds ] = useState("00");
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ totalMS, setTotalMS ] = useState(0);
   const [ timeObject, setTimeObject ] = useState({hours: 0, minutes: 0, seconds: 0});
+  const [ inputDisplayMode, setInputDisplayMode ] = useState(false);
+  const [ remainingTimeObject, setRemainingTimeObject ] = useState();
+
+  console.log('hours is ', hours);
+  console.log('minutes is ', minutes);
+  console.log('seconds is ', seconds);
+  
+  
+  
+  
 
   const startCountdown = (e) => {
     determineMilliseconds();
-    setCountdownOn(true);
-    setHours("");
-    setMinutes("");
-    setSeconds("");
+    setCountdownRunning(true);
+    setStartTime(Date.now());
+    setTimeObject({hours, minutes, seconds})
+    setRemainingTimeObject({hours, minutes, seconds});
+    // setHours("");
+    // setMinutes("");
+    // setSeconds("");
     setErrorMessage("");
   }
 
   const stopCountdown = () => {
     console.log("stopcountdown");
-    setCountdownOn(false);
+    setCountdownRunning(false);
   }
 
   const playSound = () => {
@@ -43,9 +57,9 @@ export default function TimeCopPonent2(){
 
   const determineMilliseconds = () => {
     let total = 
-      (parseInt(hoursSection) * 60 * 60 * 1000) + 
-      (parseInt(minutesSection) * 60 * 1000) + 
-      (parseInt(secondsSection) * 1000);
+      (parseInt(hours) * 60 * 60 * 1000) + 
+      (parseInt(minutes) * 60 * 1000) + 
+      (parseInt(seconds) * 1000);
 
     setTotalMS(total);
   }
@@ -73,6 +87,19 @@ export default function TimeCopPonent2(){
     }
   }
 
+ 
+
+  const triggerDisplayMode = () => {
+    setInputDisplayMode(!inputDisplayMode);
+  }
+
+  const updateRemainingTime = (t) => {
+    setRemainingTimeObject({...t});
+  }
+
+
+  console.log("timecopponent is rendering ")
+
   return(
     <div className="pomodoro-app">
       
@@ -82,7 +109,10 @@ export default function TimeCopPonent2(){
         minutes={minutes} 
         seconds={seconds}
         totalMS={totalMS}
-        countdownRunning={countdownRunning} />
+        countdownRunning={countdownRunning} 
+        displayMode={inputDisplayMode}
+        remainingTime={remainingTimeObject}
+      />
 
       <button onClick={startCountdown}>
         da start button
@@ -93,6 +123,29 @@ export default function TimeCopPonent2(){
       <button onClick={playSound}>
         play da sound
       </button>
+
+      <button onClick={triggerDisplayMode}>
+        displayMode?
+      </button>
+
+      {/* { showCountdown && (
+        // timeAtStart, timeObject, playSound, done
+        <Countdown 
+          timeAtStart={}
+          timeObject={}
+          playSound={}
+          done={}
+        />
+      )} */}
+
+      <Countdown 
+        timeAtStart={startTime}
+        timeObject={timeObject}
+        playSound={playSound}
+        done={stopCountdown}
+        running={countdownRunning}
+        passTimeUp={updateRemainingTime}
+      />
 
       <div className="pomodoro-app__error-div">
         {errorMessage}

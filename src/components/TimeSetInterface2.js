@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import SecretInputBox from "./SecretInputBox";
+import SecretInput from "./SecretInput/SecretInput";
 
 
-export default function TimeSetInterface2({updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning}) { 
+export default function TimeSetInterface2({ updateTimeUnit, totalMS, hours, minutes, seconds, countdownRunning, displayMode, remainingTime }) { 
   
   const [ secretInputValue, setSecretInputValue ] = useState("");
 
@@ -33,44 +33,56 @@ export default function TimeSetInterface2({updateTimeUnit, totalMS, hours, minut
   
   return(
     <div className="timesetinterface">
-      <div className="fake-background"></div>
 
-      <SecretInputBox 
-        maxInputLength="2" 
-        passValue={(value) => updateTimeUnit("hours", value)}
-        inputValue={hours}
-        handleBlur={() => handleBlur("hours", hours)} 
-      />
-
-      <input 
-        type="text" 
-        value={hours} 
-        onBlur={(e) => handleBlur("hours", e.target.value)} 
-        onChange={(e) => updateTimeUnit("hours", e.target.value)} />
+      <div className="interface-input-wrapper">
+        <SecretInput
+          maxInputLength={2} 
+          elementWidth={15}
+          elementHeight={12}
+          passValue={(value) => updateTimeUnit("hours", value)}
+          inputValue={ displayMode ? remainingTime.hours : hours }
+          handleBlur={() => handleBlur("hours", hours)} 
+          inputType="number"
+          displayMode={displayMode}
+        />
+      </div>
 
       <div className="timesetinterface__colons">
         :
       </div>
 
-      <div className="fake-background"></div>
-
-      <input 
-        type="text" 
-        value={minutes} 
-        onBlur={(e) => handleBlur("minutes", e.target.value)} 
-        onChange={(e) => updateTimeUnit("minutes", e.target.value)} />
+      <div className="interface-input-wrapper">
+        <SecretInput
+          maxInputLength={2} 
+          elementWidth={15}
+          elementHeight={12}
+          passValue={(value) => updateTimeUnit("minutes", value)}
+          inputValue={ displayMode ? remainingTime.minutes : minutes }
+          handleBlur={() => handleBlur("minutes", hours)} 
+          inputType="number"
+          maxValue={59}
+          displayMode={displayMode}
+          
+        />
+      </div>
 
       <div className="timesetinterface__colons">
         :
       </div>
 
-      <div className="fake-background"></div>
-
-      <input 
-        type="text" 
-        value={seconds} 
-        onBlur={(e) => handleBlur("seconds", e.target.value)} 
-        onChange={(e) => updateTimeUnit("seconds", e.target.value)} />
+      <div className="interface-input-wrapper">
+        <SecretInput
+          maxInputLength={2} 
+          elementWidth={15}
+          elementHeight={12}
+          passValue={(value) => updateTimeUnit("seconds", value)}
+          inputValue={ displayMode ? remainingTime.seconds : seconds }
+          handleBlur={() => handleBlur("seconds", hours)} 
+          inputType="number"
+          maxValue={59}
+          displayMode={displayMode}
+        />
+      </div>
 
     </div>
   )

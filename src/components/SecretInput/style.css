@@ -1,0 +1,54 @@
+
+.input-wrapper {
+  position: relative;
+  font-family: Helvetica;
+  /* border-radius: 20px; */
+}
+
+.input-wrapper .real-input {
+  position: absolute;
+  box-sizing: border-box;
+ 
+  font-family: Helvetica;
+  
+  border-image-width: 0;
+  border: none;
+  outline: none;
+
+  opacity: 0;
+  z-index: 10;
+}
+
+.input-wrapper .fake-input {
+  position: absolute;
+  top: 0; 
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+
+  font-size: inherit;
+  
+  color: orangered;
+  background-color: rgba(128, 128, 128,0.7);
+  box-sizing: border-box;
+
+  border-radius: 20px;
+}
+
+.input-wrapper .fake-input .string-char {
+  display: inline-block;
+  font-size: 1.05em;
+}
+  
+.input-wrapper .fake-input .fake-caret {
+  position: absolute;
+  display: inline-block;
+  width: 0.3rem;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+}
+  
+.input-wrapper .fake-input .no-caret { 
+  opacity: 0;
+}

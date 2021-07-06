@@ -1,30 +1,35 @@
 @use 'sass:math';
 @use '../abstracts/vars';
 
-.timesetinterface{
+.timesetinterface {
   font-size: vars.$timer-size;
   box-sizing: content-box;
+  display: flex;
+  flex-flow: row;
+
+  .interface-input-wrapper {
+    padding: 3rem 0;
+  }
   
-  &__colons{
+  &__colons {
     display: inline-block;
     transform: translateY(math.div(-(vars.$timer-size), 8));
   }
 
-  input[type=text]{
-    box-sizing: content-box;
-    position: relative;
-    font-size: vars.$timer-size;
-    border: none;
-    width: vars.$timer-size + 2rem;
-    height: vars.$timer-size - 3rem;
-    margin: 1rem;
-    text-align: center;
-    color: #fff;
-    background: rgba(0,0,0,0);
+  // input[type=text] {
+  //   box-sizing: content-box;
+  //   position: relative;
+  //   font-size: vars.$timer-size;
+  //   border: none;
+  //   width: vars.$timer-size + 2rem;
+  //   height: vars.$timer-size - 3rem;
+  //   margin: 1rem;
+  //   text-align: center;
+  //   color: #fff;
+  //   background: rgba(0,0,0,0);
 
-    letter-spacing: -0.7rem;
-
-  }
+  //   letter-spacing: -0.7rem;
+  // }
 
   .fake-background{
     box-sizing: content-box;

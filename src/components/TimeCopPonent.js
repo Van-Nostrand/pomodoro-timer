@@ -2,74 +2,38 @@ import React, {useState, useEffect} from "react";
 import mouthpop from "../assets/mouthpop.wav";
 import Countdown from "./Countdown";
 import TimeSetInterface from "./TimeSetInterface";
+import moment from 'moment';
 
-export default function TimeCopPonent(){
+export default function TimeCopPonent() {
 
-  const [countDownOn, setCountdownOn] = useState(false);
-  const [hoursField, setHoursField] = useState("");
-  const [minutesField, setMinutesField] = useState("");
-  const [secondsField, setSecondsField] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [timeObject, setTimeObject] = useState({hours: 0, minutes: 0, seconds: 0});
+  const [ countdownRunning, setCountdownRunning ] = useState(false);
+  const [ startTime, setStartTime ] = useState(Date.now());
+  const [ hours, setHours ] = useState("00");
+  const [ minutes, setMinutes ] = useState("00");
+  const [ seconds, setSeconds ] = useState("00");
+  const [ errorMessage, setErrorMessage ] = useState("");
+  const [ totalMS, setTotalMS ] = useState(0);
+  const [ timeObject, setTimeObject ] = useState({hours: 0, minutes: 0, seconds: 0});
+  const [ inputDisplayMode, setInputDisplayMode ] = useState(false);
+  const [ remainingTimeObject, setRemainingTimeObject ] = useState();
 
   const startCountdown = (e) => {
-
-    // let time = parseInt(minutesField);
-    let hours = hoursField !== "" ? parseInt(hoursField) : 0;
-    let minutes = minutesField !== "" ? parseInt(minutesField) : 0;
-    let seconds = secondsField !== "" ? parseInt(secondsField) : 0;
-
-    let timeObject = {
-      hours,
-      minutes,
-      seconds 
-    }
-    
-    setCountdownOn(true);
-    setHoursField("");
-    setMinutesField("");
-    setSecondsField("");
+    determineMilliseconds();
+    setCountdownRunning(true);
+    setStartTime(Date.now());
+    setTimeObject({hours, minutes, seconds})
+    setRemainingTimeObject({hours, minutes, seconds});
+    setInputDisplayMode(true);
+    // setHours("");
+    // setMinutes("");
+    // setSeconds("");
     setErrorMessage("");
-    setTimeObject(timeObject);
-  }
-
-  const updateMinutes = (e) => {
-    if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      setMinutesField(e.target.value);
-      setErrorMessage("");
-    } 
-    else {
-      console.log("error in updateMinutes");
-      setErrorMessage("only enter numbers");
-    }
-  }
-
-  const updateSeconds = (e) => {
-    if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      setSecondsField(e.target.value);
-      setErrorMessage("");
-    } 
-    else {
-      console.log("error in updateSeconds");
-      setSecondsField(0);
-      setErrorMessage("only enter numbers")
-    }
-  }
-
-  const updateHours = (e) => {
-    if(/^\d+$/.test(e.target.value) || e.target.value === ""){
-      setHoursField(e.target.value);
-      setErrorMessage("");
-    }
-    else {
-      console.log("error in updateHours");
-      setErrorMessage("only enter numbers");
-    }
   }
 
   const stopCountdown = () => {
     console.log("stopcountdown");
-    setCountdownOn(false);
+    setCountdownRunning(false);
+    setInputDisplayMode(false);
   }
 
   const playSound = () => {
@@ -85,50 +49,90 @@ export default function TimeCopPonent(){
     </span>
   );
 
+  const determineMilliseconds = () => {
+    let total = 
+      (parseInt(hours) * 60 * 60 * 1000) + 
+      (parseInt(minutes) * 60 * 1000) + 
+      (parseInt(seconds) * 1000);
+
+    setTotalMS(total);
+  }
+
+  const updateTimeUnit = (denomination, amount) => {
+
+    //each option tests that input is either a number or blank, and keeps the length between 0-2 characters
+    switch(denomination){
+      case "hours": 
+          setHours(amount);
+        break;
+      case "minutes": 
+          setMinutes(amount);
+        break;
+      case "seconds": 
+          setSeconds(amount);
+        break;
+      default: console.log("error in updateTimeUnit switch statement");
+    }
+  }
+
+ 
+
+  const triggerDisplayMode = () => {
+    setInputDisplayMode(!inputDisplayMode);
+  }
+
+  const updateRemainingTime = (t) => {
+    setRemainingTimeObject({...t});
+  }
+
+
+
   return(
     <div className="pomodoro-app">
-      <div className="pomodoro-app__countdown">
-        Time Left
-        <br /> 
-        { 
-          countDownOn ? 
-            <Countdown
-              timeAtStart={Date.now()}
-              timeObject={timeObject}
-              playSound={playSound}
-              done={stopCountdown} /> 
-            : blankCountdown
-        }
-      </div>
-      <div className="pomodoro-app__time-input">
-        <label htmlFor="hours-input">Hours</label>
-        <input 
-          type="text" 
-          label="hours-input"
-          value={hoursField} 
-          onChange={updateHours} />
-      </div>
-      <div className="pomodoro-app__time-input">
-        <label htmlFor="minutes-input">Minutes</label>
-        <input 
-          type="text" 
-          label="minutes-input"
-          value={minutesField} 
-          onChange={updateMinutes} />
-      </div>
-      <div className="pomodoro-app__time-input">
-        <label htmlFor="seconds-input">Seconds</label>
-        <input 
-          type="text"
-          name="seconds-input"
-          value={secondsField}
-          onChange={updateSeconds} />
-      </div>
-      <button onClick={startCountdown}>da start button</button>
-      <button onClick={stopCountdown}>da stop button</button>
-      <button onClick={playSound}>play da sound</button>
+      
+      <TimeSetInterface
+        updateTimeUnit={updateTimeUnit}  
+        hours={hours} 
+        minutes={minutes} 
+        seconds={seconds}
+        totalMS={totalMS}
+        countdownRunning={countdownRunning} 
+        displayMode={inputDisplayMode}
+        remainingTime={remainingTimeObject}
+      />
 
-      <div className="pomodoro-app__error-div">{errorMessage}</div>
+      <button onClick={startCountdown}>
+        da start button
+      </button>
+      <button onClick={stopCountdown}>
+        da stop button
+      </button>
+      <button onClick={playSound}>
+        play da sound
+      </button>
+
+      {/* { showCountdown && (
+        // timeAtStart, timeObject, playSound, done
+        <Countdown 
+          timeAtStart={}
+          timeObject={}
+          playSound={}
+          done={}
+        />
+      )} */}
+
+      <Countdown 
+        timeAtStart={startTime}
+        timeObject={timeObject}
+        playSound={playSound}
+        done={stopCountdown}
+        running={countdownRunning}
+        passTimeUp={updateRemainingTime}
+      />
+
+      <div className="pomodoro-app__error-div">
+        {errorMessage}
+      </div>
       <audio src={mouthpop}></audio>
 
     </div>

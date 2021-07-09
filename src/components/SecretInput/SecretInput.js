@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
-
 import './style.css';
-
-
 
 // This component renders an input box that can be fully customized
 // for now, pasting and highlighting are not implemented
 // input type = text is necessary because type = number gives those stupid arrow buttons
 // clicking on an input fires onFocus and then it fires onclick. Important that caret position is updated onFocus
 // number input testing is implemented but string input testing is not
-export default function SecretInput({ maxInputLength, passValue, inputValue, handleBlur, inputType, elementWidth , elementHeight, displayMode }) {
-
-  console.log('inputValue is ', inputValue);
-  
+export default function SecretInput({ 
+  displayMode, 
+  elementWidth , 
+  elementHeight, 
+  handleBlur, 
+  passValue, 
+  maxInputLength, 
+  inputType, 
+  inputValue, 
+}) {
 
   const WIDTH = elementWidth;
   const HEIGHT = elementHeight;
@@ -25,6 +28,13 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
   const [ inputFocus, setInputFocus ] = useState(false); //when input has focus, this shows the caret
   const [ inputVal , setInputVal ] = useState(inputValue); 
 
+
+  const prependWithZeros = (numb) => {
+    if (numb.length < maxInputLength) {
+      return Array(maxInputLength - numb.length).fill("0").join("") + numb;
+    }
+    return numb;
+  }
 
   // controls the caret blinking effect
   useEffect(() => {
@@ -65,20 +75,33 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
   const createInputString = () => {
     const arr = displayMode ? 
       <span className="string-char" style={{lineHeight: `${HEIGHT}rem`}}>
-        { inputValue } 
+        { prependWithZeros(inputValue) } 
       </span>
-      :
-      inputValue.split("").map((char, i) => 
-        <span 
-          className="string-char" 
-          key={`string-char-${i}`}
-          style={{
-            lineHeight: `${HEIGHT}rem`
-          }}
-        >
-          {char}
-        </span>
-      );
+      : inputFocus ? 
+        inputValue.split("").map((char, i) => 
+          <span 
+            className="string-char" 
+            key={`string-char-${i}`}
+            style={{
+              lineHeight: `${HEIGHT}rem`
+            }}
+          >
+            {char}
+          </span>
+        )
+        :
+        prependWithZeros(inputValue).split("").map((char, i) => 
+          <span 
+            className="string-char" 
+            key={`string-char-${i}`}
+            style={{
+              lineHeight: `${HEIGHT}rem`
+            }}
+          >
+            {char}
+          </span>
+        )
+
     return arr;
   }
 
@@ -95,7 +118,7 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
         passValue(e.target.value);
       }
       else {
-        console.log("inside updateValue, number input error")
+        i.log("inside updateValue, number input error")
       }
     }
     else if (inputType === 'string') {
@@ -181,7 +204,7 @@ export default function SecretInput({ maxInputLength, passValue, inputValue, han
             fontSize: `${FONT_SIZE}rem`,
           }}
           type="text" 
-          value={inputValue} 
+          value={inputFocus ? inputValue : prependWithZeros(inputValue)} 
           maxLength={maxInputLength}
           onChange={updateValue}
           onClick={handleClick}
@@ -207,9 +230,9 @@ SecretInput.defaultProps = {
 }
 
 SecretInput.propTypes = {
-  maxInputLength: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  maxInputLength: PropTypes.number,
   passValue: PropTypes.func,
-  inputValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  inputValue: PropTypes.string,
   handleBlur: PropTypes.func,
   inputType: PropTypes.oneOf(["text", "number"]),
   elementWidth: PropTypes.number,

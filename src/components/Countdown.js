@@ -7,7 +7,14 @@ import PropTypes from 'prop-types';
  * @param {function} playSound a function that plays a sound when the countdown hits zero
  * @param {function} done a function that causes the parent component to unmount Countdown
  */
-export default function Countdown({ timeAtStart, timeObject, playSound, done, running, passTimeUp }) {
+export default function Countdown({ 
+  done, 
+  passTimeUp,
+  playSound, 
+  running, 
+  timeAtStart, 
+  timeObject, 
+}) {
 
   const TIMER_INTERVAL = 150;
 
@@ -79,16 +86,16 @@ export default function Countdown({ timeAtStart, timeObject, playSound, done, ru
 
   if (needsToBeStarted) startCountdown();
 
-  return(
-    <div className="countdown-div">
-      <div className="countdown-div-unit">Hours: {timeNowObject.hours}</div>
-      <div className="countdown-div-unit">Minutes: {timeNowObject.minutes}</div>
-      <div className="countdown-div-unit">Seconds: {timeNowObject.seconds}</div> 
-      <div className="countdown-div-unit">Milliseconds: {timeNowObject.milliseconds}</div>
-    </div>
-  )
+  return <></>
+  // return(
+  //   <div className="countdown-div">
+  //     <div className="countdown-div-unit">Hours: {timeNowObject.hours}</div>
+  //     <div className="countdown-div-unit">Minutes: {timeNowObject.minutes}</div>
+  //     <div className="countdown-div-unit">Seconds: {timeNowObject.seconds}</div> 
+  //     <div className="countdown-div-unit">Milliseconds: {timeNowObject.milliseconds}</div>
+  //   </div>
+  // )
 
-  // return timeNowObject;
 }
 
 Countdown.defaultProps = {
@@ -97,4 +104,13 @@ Countdown.defaultProps = {
   playSound: () => console.log("play da sound"), 
   done: () => console.log("STAAHP"), 
   running: false
+}
+
+Countdown.propTypes = {
+  done: PropTypes.func, 
+  passTimeUp: PropTypes.func,
+  playSound: PropTypes.func, 
+  running: PropTypes.bool, 
+  timeAtStart: PropTypes.number, 
+  timeObject: PropTypes.object, 
 }

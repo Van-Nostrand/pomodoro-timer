@@ -8,6 +8,9 @@
 .input-wrapper .real-input {
   position: absolute;
   box-sizing: border-box;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
  
   font-family: Helvetica;
   
@@ -25,12 +28,15 @@
   height: 100%;
   width: 100%;
   pointer-events: none;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 
   font-size: inherit;
   
   color: orangered;
   background-color: rgba(128, 128, 128,0.7);
-  box-sizing: border-box;
+  box-sizing: content-box;
 
   border-radius: 20px;
 }

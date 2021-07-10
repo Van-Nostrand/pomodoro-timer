@@ -1,59 +1,72 @@
-import React, {Component} from "react";
-import "./NoteList.css";
+import React, { useState } from "react";
+import SecretInput from './SecretInput/SecretInput';
 
-export default class NoteList extends Component{
-  constructor(props){
-    super(props);
+export default function NoteList() {
+ 
+  const [ notes, setNotes ] = useState([]);
+  const [ inputValue, setInputValue ] = useState("");
 
-    this.state = {
-      newNoteValue: "",
-      notes: []
-    }
-  }
-
-  uploadNote = (e) => {
+  const addNote = (e) => {
     e.preventDefault();
-    let newNotes = [...this.state.notes];
-    newNotes.push(this.state.newNoteValue);
-    this.setState({notes: newNotes, newNoteValue: ""});
+    setNotes(oldNotes => [...oldNotes, inputValue]);
+    setInputValue("");
   }
 
-  handleChange = (e) => {
-    this.setState({newNoteValue: e.target.value});
+  const handleChange = (val) => {
+    setInputValue(val);
   }
 
-  handleSubmit = () => {
+  const handleSubmit = () => {
     
   }
 
-  removeNote = (noteId) => {
-    let newNotes = [...this.state.notes];
+  const removeNote = (noteId) => {
+    let newNotes = [...notes];
     newNotes = newNotes.filter((note, i) => i !== noteId);
-    this.setState({notes: newNotes});
+    setNotes(newNotes);
   }
 
-  render(){
-    let listItems = this.state.notes.map((item, i)=> <li className="note-item" key={`notekey${i}`}>{item}</li>);
+  let listItems = notes.map((item, i) => <li className="note-item" key={`notekey${i}`}>{item}</li>);
 
-    return(
-      <div className="notelist-div">
-        <h4>NOTELIST</h4>
-        <form onSubmit={this.uploadNote}>
-          <input 
-            id="note-input" 
-            type="text" 
-            onChange={this.handleChange} 
-            value={this.state.newNoteValue}
-            ></input>
-          <button 
-            id="note-submit-button" 
-            >SUBMIT</button>
-          
-        </form>
-        <ul className="notelist-list">
-          {listItems}
-        </ul>
-      </div>
-    )
-  }
+  return (
+    <div className="note-list">
+      <h4>NOTELIST</h4>
+      <form className="note-form" onSubmit={addNote}>
+
+      {/* SecretInput.defaultProps = {
+        maxInputLength: 4, 
+        elementWidth: 50,
+        elementHeight: 20,
+        passValue: () => console.log("pass input value to parent here"), 
+        inputValue: "NO VAL FOUND", 
+        handleBlur: () => console.log("no blur handler?"),
+        inputType: 'number',
+        displayMode: false
+      } */}
+
+        <SecretInput 
+          maxInputLength={50}
+          elementWidth={70}
+          elementHeight={7.5}
+          passValue={handleChange}
+          inputValue={inputValue}
+          inputType={"text"}
+          displayMode={false}
+        />
+        {/* <input 
+          className="note-input" 
+          type="text" 
+          onChange={handleChange} 
+          value={inputValue}
+        /> */}
+        <button className="note-submit-button" type="submit"  >
+          SUBMIT
+        </button>
+        
+      </form>
+      <ul className="notelist-list">
+        {listItems}
+      </ul>
+    </div>
+  )
 }

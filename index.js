@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import TimeCopPonent from "./src/components/TimeCopPonent";
+import NoteList from './src/components/NoteList';
 import "./index.css";
 import "./src/scss/main.scss";
 
@@ -10,4 +11,5 @@ import "./src/scss/main.scss";
 //   </div>
 //   , 
 //   document.getElementById("root"));
-ReactDOM.render(<TimeCopPonent />, document.getElementById("root"));
+// ReactDOM.render(<TimeCopPonent />, document.getElementById("root"));
+ReactDOM.render(<NoteList />, document.getElementById("root"));

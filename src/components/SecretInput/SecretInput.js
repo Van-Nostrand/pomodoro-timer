@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from 'prop-types';
 import './style.css';
 
@@ -18,23 +18,62 @@ export default function SecretInput({
   inputValue, 
 }) {
 
-  const WIDTH = elementWidth;
-  const HEIGHT = elementHeight;
-  const FONT_SIZE = HEIGHT * 0.87;
-
+  const fakeCaretRef = useRef(null);
+  const fakeInputRef = useRef(null);
   
   const [ caretBright, setCaretBright ] = useState(true); //controls the carets blink
   const [ caretPosition, setCaretPosition ] = useState(0); //position of the "fake" caret
   const [ inputFocus, setInputFocus ] = useState(false); //when input has focus, this shows the caret
-  const [ inputVal , setInputVal ] = useState(inputValue); 
+  const [ inputVal , setInputVal ] = useState(inputValue); // not needed?
+
+  const WIDTH = elementWidth;
+  const HEIGHT = elementHeight;
+  const FONT_SIZE = HEIGHT * 0.87;
+  const NUMBER_MODE = inputType === "number";
+  const FAKE_DIV_CLASS = NUMBER_MODE ? "fake-input" : "fake-input fake-text-input";
 
 
+  // if in number mode, keeps the display like a digital clock by adding "0"'s to the front
   const prependWithZeros = (numb) => {
     if (numb.length < maxInputLength) {
       return Array(maxInputLength - numb.length).fill("0").join("") + numb;
     }
     return numb;
   }
+
+
+  const fakeCaretSpan = (
+    <span 
+      ref={fakeCaretRef}
+      className="fake-caret" 
+      key={"fake-caret"} 
+      style={{
+        opacity: inputFocus ? caretBright ? "1" : "0.3" : "0",
+        height: `${HEIGHT * 0.8}rem`
+      }}
+    /> 
+  );
+
+
+  // handling scroll window and caret position
+  // this is tricky af
+  useEffect(() => {
+    let caretPos = fakeCaretRef.current.getBoundingClientRect().x;
+    let inputWidth = fakeInputRef.current.getBoundingClientRect().width;
+
+    // console.log('caretPos is ', caretPos);
+    // console.log('inputWidth is ', inputWidth);
+
+    console.log('fakeInputRef.current.scrollLeft is ', fakeInputRef.current.scrollLeft);
+    
+    if (caretPos > inputWidth) {
+      let difference = caretPos - inputWidth;
+      let currentScrollPos = fakeInputRef.current.scrollLeft;
+      fakeInputRef.current.scrollLeft = currentScrollPos + difference;
+    }
+    
+  })
+
 
   // controls the caret blinking effect
   useEffect(() => {
@@ -54,7 +93,6 @@ export default function SecretInput({
 
   // sets the caret in the corrent position when the input is clicked
   const handleClick = (e) => {
-    // console.log('inputclick and selectionstart is ', e.target.selectionStart);
     setCaretPosition(e.target.selectionStart);
   }
 
@@ -73,9 +111,11 @@ export default function SecretInput({
 
   // converts the user input into a series of spans
   const createInputString = () => {
+    const updatedInputValue = NUMBER_MODE ? prependWithZeros(inputValue) : inputValue;
+
     const arr = displayMode ? 
       <span className="string-char" style={{lineHeight: `${HEIGHT}rem`}}>
-        { prependWithZeros(inputValue) } 
+        { updatedInputValue } 
       </span>
       : inputFocus ? 
         inputValue.split("").map((char, i) => 
@@ -90,7 +130,7 @@ export default function SecretInput({
           </span>
         )
         :
-        prependWithZeros(inputValue).split("").map((char, i) => 
+        updatedInputValue.split("").map((char, i) => 
           <span 
             className="string-char" 
             key={`string-char-${i}`}
@@ -106,32 +146,25 @@ export default function SecretInput({
   }
 
 
-  // does typechecking and updates the input value
+  // updates the input value
   const updateValue = (e) => {
-    // console.log('updatevalue and e.target.selectionStart is ', e.target.selectionStart);
     
     // handle input filtering here
-    if (inputType === 'number'){
+    if (NUMBER_MODE) {
       if (/^[0-9]*$/.test(e.target.value)) {
         setCaretPosition(e.target.selectionStart);
         setInputVal(e.target.value);
         passValue(e.target.value);
       }
       else {
-        i.log("inside updateValue, number input error")
+        console.log("inside updateValue, number input error")
       }
     }
-    else if (inputType === 'string') {
-      if (/^[a-zA-Z ]*$/.test(e.target.value)) {
-        setCaretPosition(e.target.selectionStart);
-        setInputVal(e.target.value);
-        passValue(e.target.value);
-      }
-      else {
-        console.log("inside updateValue, string input error");
-      }
+    else {
+      setCaretPosition(e.target.selectionStart);
+      setInputVal(e.target.value);
+      passValue(e.target.value);
     }
-    
   }
 
 
@@ -150,31 +183,16 @@ export default function SecretInput({
   }
 
 
-  const fakeCaret = inputFocus ? 
-    <span 
-      className="fake-caret" 
-      key={"fake-caret"} 
-      style={{
-        opacity: caretBright ? "1" : "0.3",
-        height: `${HEIGHT * 0.8}rem`
-      }}
-    ></span> 
-    : 
-    <span 
-      className="no-caret" 
-      key="no-caret"
-    ></span>;
-
-
   // input string is split into an array of characters so that the caret, which is a span, can be inserted between characters
   let inputStringArr = createInputString();
-  if (!displayMode) inputStringArr.splice(caretPosition, 0, fakeCaret);
+  if (!displayMode) inputStringArr.splice(caretPosition, 0, fakeCaretSpan);
 
   let inputDiv = (
     <div 
-      className="fake-input" 
+      ref={fakeInputRef}
+      className={FAKE_DIV_CLASS}
       style={{ 
-        padding:`${HEIGHT * 0.1}rem` 
+        padding:`${HEIGHT * 0.1}rem`,
       }}
     >
       { inputStringArr }
@@ -204,7 +222,7 @@ export default function SecretInput({
             fontSize: `${FONT_SIZE}rem`,
           }}
           type="text" 
-          value={inputFocus ? inputValue : prependWithZeros(inputValue)} 
+          value={inputFocus ? inputValue : NUMBER_MODE ? prependWithZeros(inputValue) : inputValue } 
           maxLength={maxInputLength}
           onChange={updateValue}
           onClick={handleClick}

@@ -111,16 +111,6 @@ export default function TimeCopPonent() {
         play da sound
       </button>
 
-      {/* { showCountdown && (
-        // timeAtStart, timeObject, playSound, done
-        <Countdown 
-          timeAtStart={}
-          timeObject={}
-          playSound={}
-          done={}
-        />
-      )} */}
-
       <Countdown 
         timeAtStart={startTime}
         timeObject={timeObject}

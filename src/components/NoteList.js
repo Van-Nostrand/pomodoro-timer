@@ -28,6 +28,8 @@ export default function NoteList() {
 
   let listItems = notes.map((item, i) => <li className="note-item" key={`notekey${i}`}>{item}</li>);
 
+  
+
   return (
     <div className="note-list">
       <h4>NOTELIST</h4>
@@ -46,7 +48,7 @@ export default function NoteList() {
 
         <SecretInput 
           maxInputLength={50}
-          elementWidth={70}
+          elementWidth={10}
           elementHeight={7.5}
           passValue={handleChange}
           inputValue={inputValue}

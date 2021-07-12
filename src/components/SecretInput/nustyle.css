@@ -1,0 +1,82 @@
+/* 
+NOTES: 
+  - It's important that both .fake-input and .real-input have the same font-size, letter-spacing, and font-family
+  - Firefox supports css properties "scrollbar-width" and "scrollbar-color" to style the scrollbar, while pretty much all other browsers require you to target .element::-webkit-scrollbar. 
+  - Internet Explorer does not support scrollbar styling at all, but screw internet explorer
+  */
+
+  .input-wrapper {
+    position: relative;
+    font-family: Helvetica;
+    /* border-radius: 20px; */
+  }
+  
+  .input-wrapper .real-input {
+    position: absolute;
+    box-sizing: border-box;
+    /* box-sizing: content-box; */
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+   
+    font-family: Helvetica;
+    
+    border-image-width: 0;
+    border: none;
+    outline: none;
+  
+    opacity: 0.3;
+    z-index: 10;
+  }
+  
+  .input-wrapper .fake-input {
+    position: absolute;
+    top: 0; 
+    height: 100%;
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none; 
+  
+    font-size: inherit;
+    
+    color: orangered;
+    background-color: rgba(128, 128, 128,0.7);
+    /* box-sizing: content-box; */
+    box-sizing: border-box;
+  
+    border-radius: 20px;
+  }
+  
+  .input-wrapper .fake-input::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  
+  /* .input-wrapper .fake-input::after {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 10%;
+    background-color: purple;
+    top: 15rem;
+    z-index: 50;
+  } */
+  
+  .input-wrapper .fake-input .string-char {
+    display: inline-block;
+  }
+    
+  .input-wrapper .fake-input .fake-caret {
+    position: absolute;
+    display: inline-block;
+    width: 0.3rem;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+  }
+    
+  .input-wrapper .fake-input .no-caret { 
+    opacity: 0;
+  }

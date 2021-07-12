@@ -1,42 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef, useReducer } from "react";
 import PropTypes from 'prop-types';
 import './nustyle.css';
+import { initialState, reducer } from './FakeInputReducer';
 
-const initialState = {
-  caretBright: true,
-  caretPosition: 0,
-  inputFocus: false,
-  inputString: '',
-  writingMode: false,
-  hasFocus: false,
-  focusWasApplied: false,
-}
-
-function reducer(state, action) {
-  switch(action.type) {
-    case 'blink_caret':
-      return { ...state, caretBright: !state.caretBright }
-    case 'set_caret_bright':
-      return { ...state, caretBright: action.payload }
-    case 'set_caret_position':
-      return { ...state, caretPosition: action.payload }
-    case 'set_input_focus':
-      return { ...state, inputFocus: action.payload }
-    case 'set_input_string':
-      return { ...state, inputString: action.payload }
-    case 'set_writing_mode':
-      return { ...state, writingMode: action.payload }
-    case 'set_div_focus':
-      return { ...state, hasFocus: action.payload }
-    case 'set_focus_was_applied':
-      return { ...state, focusWasApplied: action.payload }
-    default: return state;
-  }
-}
-/*
-I'm rewriting this whole thing.
-I was last working on caret position detection
- */
 
 // This component renders an input box that can be fully customized
 // for now, pasting and highlighting are not implemented
@@ -47,7 +13,7 @@ export default function FakeInputElement({
   displayMode, 
   elementWidth , 
   elementHeight, 
-  handleBlur, 
+  // handleBlur, 
   passValue, 
   maxInputLength, 
   inputType, 
@@ -55,40 +21,36 @@ export default function FakeInputElement({
 
   const fakeCaretRef = useRef(null);
   const fakeInputRef = useRef(null);
-
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  
-  // const [ caretBright, setCaretBright ] = useState(true); //controls the carets blink
-  // const [ caretPosition, setCaretPosition ] = useState(0); //position of the "fake" caret
-  const [ inputFocus, setInputFocus ] = useState(false); //when input has focus, this shows the caret
-  const [ inputString, setInputString ] = useState("");
-  const [ writingMode, setWritingMode ] = useState(false);
-  const [ hasFocus, setHasFocus ] = useState(false);
-  const [ focusWasApplied, setFocusWasApplied ] = useState(false);
 
-  const WIDTH = elementWidth;
-  const HEIGHT = elementHeight;
-  const FONT_SIZE = HEIGHT * 0.87;
+  const FONT_SIZE = elementHeight * 0.87;
   const NUMBER_MODE = inputType === "number";
   const FAKE_DIV_CLASS = NUMBER_MODE ? "fake-input" : "fake-input fake-text-input";
-  const INPUT_SIDE_PAD_MULT = 0.01;
-  const INPUT_MARGIN_TOP_MULT = 0.1;
-  const INPUT_CARET_SCROLL_BUFFER = elementWidth * 0.02;
 
 
   useEffect(() => {
     // if gaining focus
-    if (hasFocus && !focusWasApplied) {
+    if (state.inputFocus && !state.focusWasApplied) {
       setFocusWasApplied(true);
       giveFocus();
       setWritingMode(true);
     }
     // else if losing focus
-    else if (!hasFocus && focusWasApplied) {
+    else if (!state.inputFocus && state.focusWasApplied) {
       setFocusWasApplied(false);
       giveBlur();
     }
   });
+
+  // no longer necessary?
+  const setFocusWasApplied = (b = !state.focusWasApplied) => {
+    dispatch({ type: 'set_focus_was_applied', payload: b });
+  }
+
+
+  const setWritingMode = (b = !state.writingMode) => {
+    dispatch({ type: 'set_writing_mode', payload: b })
+  }
 
 
   const giveFocus = () => {
@@ -117,16 +79,13 @@ export default function FakeInputElement({
   
 
   // sets the caret in the corrent position when the input is clicked
-  const handleInputClick = (e) => {
-    // console.log("handleInputclick",e);
-    // console.log('e.nativeEvent.target is ', e.nativeEvent.target);
-    if (e.nativeEvent.target) {
-      console.log("span was clicked")
+  // WIP here
+  // todo - determine where caret should be placed
+  const handleClick = (e) => {
+    // let boundRect = e.target.getBoundingClientRect();
+    if (e.target.className === "string-char") {
+      console.log(e.target);
     }
-    else {
-      console.log("span not clicked")
-    }
-    
 
     let divBoundingRect = e.target.getBoundingClientRect();
     let divPosition = {x: divBoundingRect.x, y: divBoundingRect.y};
@@ -137,22 +96,21 @@ export default function FakeInputElement({
       y: clickPosition.y - divPosition.y
     };
 
-    determineCaretPosition(clickInDiv);
+    // determineCaretPosition(clickInDiv);
 
-    if (!writingMode) {
-      dispatch({ type: 'set_writing_mode', payload: true })
-
+    if (!state.writingMode) {
+      setWritingMode(true);
       // set caret position here ?
     }
   }
 
   const handleLetterClick = (e) => {
-    console.log("handleLetterClick",e);
+    // console.log("handleLetterClick",e);
   }
 
 
   const determineCaretPosition = (clickPosition) => {
-    console.log(fakeInputRef.current.children);
+    // console.log(fakeInputRef.current.children);
 
   }
 
@@ -174,6 +132,10 @@ export default function FakeInputElement({
       type: 'set_caret_position',
       payload: position
     });
+  }
+
+  const setInputFocus = (b = !state.inputFocus) => {
+    dispatch({ type: 'set_input_focus', payload: b})
   }
 
 
@@ -198,20 +160,15 @@ export default function FakeInputElement({
   }
 
  
-
-
-
   // set the caret in the corrent position and set the inputFocus flag (which starts the caret blinking cycle)
-  const gainFocus = (e) => {
-    setCaretPosition(e.target.selectionStart);
+  const handleFocus = (e) => {
     setInputFocus(true);
   }
 
 
   // focus is lost, make the caret invisible
-  const loseFocus = (e) => {
+  const handleBlur = (e) => {
     setInputFocus(false);
-    handleBlur();
   }
 
 
@@ -223,54 +180,37 @@ export default function FakeInputElement({
     return numb;
   }
 
-
-  // converts the user input into a series of spans
-  const createInputString = () => {
-    const updatedInputValue = NUMBER_MODE ? prependWithZeros(inputString) : inputString;
-
-    const arr = displayMode ? 
-      <span className="string-char" style={{lineHeight: `${HEIGHT}rem`}}>
-        { updatedInputValue } 
+  const convertStringToSpanArray = (string) => {
+    return string.split("").map((char, i) => 
+      <span
+        className="str-char"
+        id={`${i}--str-char`}
+        key={`${i}--str-char`}
+        style={{ lineHeight: `${elementHeight}rem`}}
+      >
+        { char }
       </span>
-      : inputFocus ? 
-        inputString.split("").map((char, i) => 
-          <span 
-            className="string-char" 
-            key={`string-char-${i}`}
-            style={{
-              lineHeight: `${HEIGHT}rem`
-            }}
-          >
-            {char}
-          </span>
-        )
-        :
-        updatedInputValue.split("").map((char, i) => 
-          <span 
-            className="string-char" 
-            key={`string-char-${i}`}
-            onClick={handleLetterClick}
-            onMouseDown={() => console.log("onmousedown")}
-            style={{
-              lineHeight: `${HEIGHT}rem`
-            }}
-          >
-            {char}
-          </span>
-        )
+    )
+  }
 
-    return arr;
-  }  
+  const createInputString = () => {
+    let { inputString } = state;
+    if (inputType === 'number' && displayMode && !state.inputFocus) {
+      inputString = prependWithZeros(inputString);
+    }
+    return convertStringToSpanArray(inputString);
+  }
 
 
   const fakeCaretSpan = (
     <span 
       ref={fakeCaretRef}
-      className="fake-caret" 
-      key={"fake-caret"} 
+      className="caret" 
+      id="caret"
+      key={"caret"} 
       style={{
         opacity: state.writingMode ? state.caretBright ? "1" : "0.3" : "0",
-        height: `${HEIGHT * 0.8}rem`
+        height: `${elementHeight * 0.8}rem`
       }}
     /> 
   );
@@ -287,11 +227,12 @@ export default function FakeInputElement({
       ref={fakeInputRef}
       className={FAKE_DIV_CLASS}
       style={{ 
-        // padding:`${HEIGHT * 0.1}rem`,
+        // padding:`${elementHeight * 0.1}rem`,
       }}
-      onClick={handleInputClick}
-      onFocus={() => console.log("gained focus!")}
-      onBlur={() => console.log("lost focus!")}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onKeyDown={handleInputKeyDown}
     >
       { inputStringArr }
     </div>
@@ -303,8 +244,8 @@ export default function FakeInputElement({
     <div 
       className="input-wrapper" 
       style={{
-        width: `${WIDTH}rem`,
-        height: `${HEIGHT}rem`,
+        width: `${elementWidth}rem`,
+        height: `${elementHeight}rem`,
         fontSize: `${FONT_SIZE}rem`
       }}
     >
@@ -320,7 +261,7 @@ FakeInputElement.defaultProps = {
   elementWidth: 50,
   elementHeight: 20,
   passValue: () => console.log("pass input value to parent here"), 
-  handleBlur: () => console.log("no blur handler?"),
+  // handleBlur: () => console.log("no blur handler?"),
   inputType: 'number',
   displayMode: false
 }
@@ -328,7 +269,7 @@ FakeInputElement.defaultProps = {
 FakeInputElement.propTypes = {
   maxInputLength: PropTypes.number,
   passValue: PropTypes.func,
-  handleBlur: PropTypes.func,
+  // handleBlur: PropTypes.func,
   inputType: PropTypes.oneOf(["text", "number"]),
   elementWidth: PropTypes.number,
   elementHeight: PropTypes.number,

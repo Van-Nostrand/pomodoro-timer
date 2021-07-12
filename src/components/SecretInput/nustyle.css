@@ -64,11 +64,11 @@ NOTES:
     z-index: 50;
   } */
   
-  .input-wrapper .fake-input .string-char {
+  .input-wrapper .fake-input .str-char {
     display: inline-block;
   }
     
-  .input-wrapper .fake-input .fake-caret {
+  .input-wrapper .fake-input .caret {
     position: absolute;
     display: inline-block;
     width: 0.3rem;

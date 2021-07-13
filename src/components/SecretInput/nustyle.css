@@ -54,18 +54,9 @@ NOTES:
     height: 0;
   }
   
-  /* .input-wrapper .fake-input::after {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 10%;
-    background-color: purple;
-    top: 15rem;
-    z-index: 50;
-  } */
-  
   .input-wrapper .fake-input .str-char {
     display: inline-block;
+    white-space: pre;
   }
     
   .input-wrapper .fake-input .caret {

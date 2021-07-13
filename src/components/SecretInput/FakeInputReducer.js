@@ -3,7 +3,7 @@ export const initialState = {
   caretBright: true,
   caretPosition: 0,
   inputFocus: false,
-  inputString: 'abcd',
+  inputString: 'abc d',
   writingMode: false,
   focusWasApplied: false,
 }

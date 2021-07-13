@@ -13,7 +13,6 @@ export default function FakeInputElement({
   displayMode, 
   elementWidth , 
   elementHeight, 
-  // handleBlur, 
   passValue, 
   maxInputLength, 
   inputType, 
@@ -29,11 +28,19 @@ export default function FakeInputElement({
 
 
   useEffect(() => {
+
+    
     // if gaining focus
     if (state.inputFocus && !state.focusWasApplied) {
-      setFocusWasApplied(true);
+      console.log("inside first condition")
       giveFocus();
-      setWritingMode(true);
+      dispatch({
+        type: 'set_state', 
+        payload: {
+          focusWasApplied: true, 
+          writingMode: true
+        }
+      })
     }
     // else if losing focus
     else if (!state.inputFocus && state.focusWasApplied) {
@@ -41,6 +48,23 @@ export default function FakeInputElement({
       giveBlur();
     }
   });
+
+
+  // controls the caret blinking effect
+  useEffect(() => {
+    let BLINKING_CARET;
+    
+    if(state.writingMode){
+      BLINKING_CARET = setInterval(() => {
+        dispatch({type: 'blink_caret'});
+      }, 500);
+    }else if(!state.writingMode){
+      clearInterval(BLINKING_CARET);
+    }
+
+    return () => clearInterval(BLINKING_CARET);
+  }, [state.writingMode]);
+
 
   // no longer necessary?
   const setFocusWasApplied = (b = !state.focusWasApplied) => {
@@ -60,58 +84,37 @@ export default function FakeInputElement({
   const giveBlur = () => {
     fakeInputRef.current.blur();
   }
-
-
-  // controls the caret blinking effect
-  useEffect(() => {
-    let BLINKING_CARET;
-    
-    if(state.writingMode){
-      BLINKING_CARET = setInterval(() => {
-        dispatch({type: 'blink_caret'});
-      }, 500);
-    }else if(!state.writingMode){
-      clearInterval(BLINKING_CARET);
-    }
-
-    return () => clearInterval(BLINKING_CARET);
-  }, [state.writingMode]);
   
 
   // sets the caret in the corrent position when the input is clicked
   // WIP here
   // todo - determine where caret should be placed
   const handleClick = (e) => {
-    // let boundRect = e.target.getBoundingClientRect();
-    if (e.target.className === "string-char") {
-      console.log(e.target);
+
+    let nuuState = {};
+    if (e.target.id.match(/(str-char)$/)) {
+      let brX = e.target.getBoundingClientRect().x;
+      let brW = e.target.getBoundingClientRect().width;
+      let clickPos = e.clientX;
+      let clickRelative = clickPos - brX;
+
+      // console.log("Rect starts at ", brX, " and it's ", brW, " wide, while the click was at ", clickPos)
+
+
+      // closer to left of char
+      if (clickRelative <  (brW / 2)) {
+        nuuState.CaretPosition = parseInt(e.target.id.split("-")[0])
+      }
+      // closer to right
+      else {
+        nuuState.caretPosition = parseInt(e.target.id.split("-")[0]) + 1;
+      }
     }
-
-    let divBoundingRect = e.target.getBoundingClientRect();
-    let divPosition = {x: divBoundingRect.x, y: divBoundingRect.y};
-    let clickPosition = { x: e.clientX, y: e.clientY};
-
-    let clickInDiv = {
-      x: clickPosition.x - divPosition.x, 
-      y: clickPosition.y - divPosition.y
-    };
-
-    // determineCaretPosition(clickInDiv);
 
     if (!state.writingMode) {
-      setWritingMode(true);
-      // set caret position here ?
+      nuuState.writingMode = true;
     }
-  }
-
-  const handleLetterClick = (e) => {
-    // console.log("handleLetterClick",e);
-  }
-
-
-  const determineCaretPosition = (clickPosition) => {
-    // console.log(fakeInputRef.current.children);
-
+    dispatch({type: 'set_state', payload: nuuState});
   }
 
 
@@ -134,8 +137,9 @@ export default function FakeInputElement({
     });
   }
 
+
   const setInputFocus = (b = !state.inputFocus) => {
-    dispatch({ type: 'set_input_focus', payload: b})
+    dispatch({ type: 'set_input_focus', payload: b })
   }
 
 
@@ -162,13 +166,22 @@ export default function FakeInputElement({
  
   // set the caret in the corrent position and set the inputFocus flag (which starts the caret blinking cycle)
   const handleFocus = (e) => {
+    console.log("focusss")
     setInputFocus(true);
   }
 
 
   // focus is lost, make the caret invisible
   const handleBlur = (e) => {
-    setInputFocus(false);
+    console.log("NOPE")
+    dispatch({
+      type: 'set_state',
+      payload: {
+        inputFocus: false,
+        writingMode: false,
+        focusWasApplied: false,
+      }
+    })
   }
 
 
@@ -179,6 +192,7 @@ export default function FakeInputElement({
     }
     return numb;
   }
+
 
   const convertStringToSpanArray = (string) => {
     return string.split("").map((char, i) => 
@@ -207,7 +221,7 @@ export default function FakeInputElement({
       ref={fakeCaretRef}
       className="caret" 
       id="caret"
-      key={"caret"} 
+      key="caret"
       style={{
         opacity: state.writingMode ? state.caretBright ? "1" : "0.3" : "0",
         height: `${elementHeight * 0.8}rem`
@@ -229,6 +243,7 @@ export default function FakeInputElement({
       style={{ 
         // padding:`${elementHeight * 0.1}rem`,
       }}
+      tabIndex="0"
       onClick={handleClick}
       onFocus={handleFocus}
       onBlur={handleBlur}

@@ -1,60 +1,70 @@
-let path = require('path');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
-let MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-  entry: './index.js',
+  entry: __dirname + '/src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: ""
+    publicPath: ''
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/, 
-        use:'babel-loader', 
+        test: /\.(js|jsx)$/,
+        use:'babel-loader',
         exclude: /node_modules/
       },
       {
         test: /\.s[ac]ss$/i,
         use: [
           'style-loader',
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          },
           {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
+              sourceMap: true
             }
           }
         ]
       },
       {
-        test: /\.css$/, 
+        test: /\.css$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader
           },
-          "css-loader"
+          'css-loader'
         ],
         exclude: /node_modules/
       },
       {
         test: /\.wav$/,
-        use: "file-loader",
+        use: 'file-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.(png|jpe?g|svg|gif)$/i,
+        type: 'asset/resource'
       }
     ]
   },
-  // mode: 'development',
   plugins: [
     new HtmlWebpackPlugin ({
       template: path.resolve(__dirname, 'public/index.html'),
-      inject: "body"
+      inject: 'body'
     }),
     new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css"
+      filename: '[name].css',
+      chunkFilename: '[id].css'
     })
-  ]
+  ],
+  devtool: 'source-map'
 }
